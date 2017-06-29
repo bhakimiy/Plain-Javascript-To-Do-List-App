@@ -5,12 +5,12 @@
 
 @font-face {
     font-family: 'Gotham-Rounded-Medium';
-    src: url('assets/fonts/GothamRounded-Medium.ttf')  format('truetype'); /* Safari, Android, iOS */
+    src: url('fonts/GothamRounded-Medium.ttf')  format('truetype'); /* Safari, Android, iOS */
 }
 
 @font-face {
     font-family: 'Gotham-Rounded-Book';
-    src: url('assets/fonts/GothamRounded-Book.ttf')  format('truetype'); /* Safari, Android, iOS */
+    src: url('fonts/GothamRounded-Book.ttf')  format('truetype'); /* Safari, Android, iOS */
 }
 
 body {
@@ -93,7 +93,7 @@ ul {
     float: right;
     height: 30px;
     width: 30px;
-    background: url("assets/img/check-bg.png") no-repeat;
+    background: url("img/check-bg.png") no-repeat;
     background-size: cover;
 }
 
@@ -102,7 +102,7 @@ ul {
     float: right;
     height: 30px;
     width: 30px;
-    background: url("assets/img/check-bg-checked.png") no-repeat;
+    background: url("img/check-bg-checked.png") no-repeat;
     background-size: cover;
 }
 
@@ -111,7 +111,7 @@ ul {
     float: right;
     height: 30px;
     width: 30px;
-    background: url("assets/img/check-bg.png") no-repeat;
+    background: url("img/check-bg.png") no-repeat;
     background-size: cover;
     cursor: pointer;
 }
@@ -121,7 +121,7 @@ ul {
     float: right;
     height: 30px;
     width: 30px;
-    background: url("assets/img/check-bg-checked.png") no-repeat;
+    background: url("img/check-bg-checked.png") no-repeat;
     background-size: cover;
     cursor: pointer;
 }
@@ -131,7 +131,7 @@ ul {
     float: right;
     height: 30px;
     width: 30px;
-    background: url("assets/img/check-bg-checked.png") no-repeat;
+    background: url("img/check-bg-checked.png") no-repeat;
     background-size: cover;
     cursor: pointer;
 }
