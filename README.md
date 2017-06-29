@@ -2,7 +2,7 @@
 Simple TO-DO list app made on plain JavaScript, for me to learn and practice the JavaScript.
 
 ## Suggestions
-There is a **_"suggestions"_** file where you can leave your suggestions to add new features or improve the current app.<br>
+You can leave your suggestions on "Issues" section to add new features or improve the current app.<br>
 Whenever I will have free time, and find the suggestions useful, I will implement them.
 <br><br>
 
