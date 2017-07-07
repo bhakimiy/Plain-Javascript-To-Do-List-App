@@ -49,29 +49,41 @@ var UIController = (function () {
 // App Controller Object
 var AppController = (function (ListController, UIController) {
     var addEventListeners = function () {
-        // Adding New Element to the List
+
         var addNewButton = document.getElementById(UIController.getDOMStrings().addNewButtonID);
         var listItemInputElement = document.getElementById(UIController.getDOMStrings().listItemNameInputID);
+
+        // Adding New Element to the List on click on addNewButton
         if (addNewButton) {
-            addNewButton.addEventListener('click', function () {
-                var itemName = listItemInputElement.value;
-                if(itemName){
-                    var newIListItem = ListController.addListItem(itemName);
-                    UIController.addListItemToUI(newIListItem);
-
-                    // Adding OnChange listener to the new Element
-                    checkboxOnChange.call(document.getElementById('task-' + newIListItem.id));
-
-                    if(listItemInputElement.classList.contains('not-filled')){
-                        listItemInputElement.classList.remove('not-filled');
-                    }
-                    listItemInputElement.value = "";
-                } else {
-                    document.getElementById(UIController.getDOMStrings().listItemNameInputID).classList.add('not-filled');
-                }
-            });
+            addNewButton.addEventListener('click', addItem);
         }
 
+        // Adding New Element to the List on Enter KeyDown event fired
+        listItemInputElement.onkeydown = function (e) {
+            if(e.keyCode === 13){
+                addItem();
+            }
+        };
+
+        // Create a function that adds element to the List on the page and to the ListController
+        function addItem  () {
+            var itemName = listItemInputElement.value;
+            if(itemName){
+                var newIListItem = ListController.addListItem(itemName);
+                UIController.addListItemToUI(newIListItem);
+
+                // Adding OnChange listener to the new Element
+                checkboxOnChange.call(document.getElementById('task-' + newIListItem.id));
+
+                if(listItemInputElement.classList.contains('not-filled')){
+                    listItemInputElement.classList.remove('not-filled');
+                }
+                listItemInputElement.value = "";
+            } else {
+                document.getElementById(UIController.getDOMStrings().listItemNameInputID).classList.add('not-filled');
+            }
+        };
+        
         // Add OnChange event listener to checkbox input
         var checkboxOnChange = function () {
             var finishedTasksList = document.querySelector('#' + UIController.getDOMStrings().finishedTasksListID);

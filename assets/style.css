@@ -77,6 +77,7 @@ ul {
     margin: 26px 0;
     font-size: 20px;
     line-height: 30px;
+    text-transform: capitalize;
 }
 
 .tasks input {
@@ -179,6 +180,7 @@ ul {
 
 .new-task-input .not-filled {
     border-color: rgba(208, 23, 47, 0.78) !important;
+    color: rgba(208, 23, 47, 0.78) !important;
 }
 
 .new-task-input input[type="text"].not-filled:focus::placeholder,
