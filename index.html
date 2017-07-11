@@ -1,0 +1,73 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="assets/style.css">
+
+    <script>
+        /**
+         * Making sure that the window and DOM elements are loaded
+         * before running the script to prevent errors.
+         *
+         * Here I simply creating the script element to our main script
+         * and appending it to the head tad after page load.
+         *
+        **/
+        window.onload = function () {
+        var head = document.getElementsByTagName('head');
+        var script = document.createElement('script');
+        script.setAttribute('src', 'assets/script.js');
+        head[0].appendChild(script);
+    };</script>
+
+
+    <title>Plain JavaScript TO-DO List</title>
+</head>
+<body>
+    <div class="box">
+
+        <!-- Start Top Part -->
+        <div class="top-part">
+            <span class="day">12</span>
+            <ul>
+                <li class="month">Jan</li>
+                <li class="year">2016</li>
+            </ul>
+            <span class="week-day">Tuesday</span>
+        </div><!-- top-part -->
+        <!-- End Top Part -->
+
+        <!-- Start List Part -->
+        <div class="list">
+            <!-- Finished Tasks -->
+            <ul class="tasks done" id="finished-tasks">
+
+            </ul><!-- Finished tasks -->
+            <!-- Unfinished Tasks -->
+            <ul class="tasks" id="unfinished-tasks">
+
+                <!--<li class="done">Buy new sweatshirt<input type="checkbox" id="task-1" checked><label for="task-1"></label></li>
+                <li>Begin promotional phase<input type="checkbox" id="task-2"><label for="task-2"></label></li>
+                <li>Read an article<input type="checkbox" id="task-3"><label for="task-3"></label></li>
+                <li>Try not to fall asleep<input type="checkbox" id="task-4"><label for="task-4"></label></li>
+                <li>Watch 'Sherlock'<input type="checkbox" id="task-5"><label for="task-5"></label></li>-->
+            </ul><!-- Unfinished tasks -->
+        </div><!-- list -->
+        <!-- End List Part -->
+
+        <!-- Start Bottom Part -->
+        <div class="bottom">
+            <div class="new-task-input">
+                <input type="text" placeholder="Write TO-DO name" id="new-task-name">
+            </div><!-- new-task-input -->
+        </div><!-- bottom -->
+        <!-- End Bottom Part -->
+
+        <button id="new">+</button>
+
+    </div><!-- box -->
+</body>
+</html>

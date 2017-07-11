@@ -1,0 +1,276 @@
+/**
+  * Author: Bobur Khakimov
+  * GitHub: https://github.com/marshmell0w
+ **/
+
+@font-face {
+    font-family: 'Gotham-Rounded-Medium';
+    src: url('fonts/GothamRounded-Medium.ttf')  format('truetype'); /* Safari, Android, iOS */
+}
+
+@font-face {
+    font-family: 'Gotham-Rounded-Book';
+    src: url('fonts/GothamRounded-Book.ttf')  format('truetype'); /* Safari, Android, iOS */
+}
+
+body {
+    background-color: #f0efe9;
+    color: #3e434f;
+    font-family: "Gotham-Rounded-Book", "Open Sans", Arial;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+ul {
+    list-style: none;
+}
+
+.box {
+    background-color: #ffffff;
+    box-shadow: 0 0 15px rgba(207, 211, 218, 0.35);
+    display: inline-block;
+    padding: 40px 55px 40px 50px;
+    position: absolute;
+    left: 50%;
+    margin-left: -185px;
+    top: 100px;
+    width: 370px;
+}
+
+.top-part {
+    color: #616473;
+    margin-bottom: 40px;
+}
+
+.top-part .day {
+    color: #616473;
+    font-size: 42px;
+    font-weight: bold;
+}
+
+.top-part ul {
+    display: inline-block;
+    margin: 0;
+    padding: 0 0 0 5px;
+}
+
+.top-part .month {
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.top-part .week-day {
+    float: right;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 52px;
+}
+
+.tasks {
+    padding: 0;
+}
+
+.tasks li {
+    margin: 26px 0;
+    font-size: 20px;
+    line-height: 30px;
+    text-transform: capitalize;
+}
+
+.tasks span.drag-dots {
+    margin-left: -19px;
+    margin-right: 7px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    font-size: 19px;
+    color: #a0a0a0;
+    cursor: move;
+}
+
+.tasks li:hover span.drag-dots {
+    opacity: 1;
+}
+
+.tasks input {
+    float: right;
+}
+
+/* Styling the Checkbox */
+.tasks input[type="checkbox"] {
+    display: none;
+}
+
+.tasks input[type="checkbox"] + label {
+    display: inline-block;
+    float: right;
+    height: 30px;
+    width: 30px;
+    background: url("img/check-bg.png") no-repeat;
+    background-size: cover;
+}
+
+.tasks input[type="checkbox"]:checked + label {
+    display: inline-block;
+    float: right;
+    height: 30px;
+    width: 30px;
+    background: url("img/check-bg-checked.png") no-repeat;
+    background-size: cover;
+}
+
+.tasks input[type="checkbox"] + label:hover {
+    display: inline-block;
+    float: right;
+    height: 30px;
+    width: 30px;
+    background: url("img/check-bg.png") no-repeat;
+    background-size: cover;
+    cursor: pointer;
+}
+
+.tasks input[type="checkbox"]:checked + label:hover {
+    display: inline-block;
+    float: right;
+    height: 30px;
+    width: 30px;
+    background: url("img/check-bg-checked.png") no-repeat;
+    background-size: cover;
+    cursor: pointer;
+}
+
+.tasks input[type="checkbox"]:checked + label:hover {
+    display: inline-block;
+    float: right;
+    height: 30px;
+    width: 30px;
+    background: url("img/check-bg-checked.png") no-repeat;
+    background-size: cover;
+    cursor: pointer;
+}
+
+/* End Checkbox Styling */
+
+.list .done {
+    color: #bdc0ca;
+}
+
+
+/* Bottom Part */
+
+.new-task-input input[type="text"] {
+    margin-top: 40px;
+    margin-bottom: 20px;
+    padding: 5px 10px 5px 15px;
+    width: 100%;
+    /* margin-right: 2%;   Used when text input has the add button after it */
+    border-radius: 2px;
+    border: 2px solid rgba(220, 220, 220, 0.7);
+    font-size: 17px;
+    color: rgb(130, 130, 130);
+    transition: border-color 0.3s;
+}
+
+.new-task-input input[type="text"]:hover {
+    border: 2px solid rgba(220, 220, 220, 0.5);
+}
+
+.new-task-input input[type="text"]:focus {
+    outline: none;
+    border: 2px solid rgb(220, 220, 220);
+}
+
+.new-task-input input[type="text"]::placeholder,
+.new-task-input input[type="text"]::-webkit-input-placeholder {
+    color: rgb(190, 190, 190);
+}
+
+.new-task-input input[type="text"]:focus::placeholder,
+.new-task-input input[type="text"]:focus::-webkit-input-placeholder {
+    color: rgb(130, 130, 130);
+}
+
+.new-task-input .not-filled {
+    border-color: rgba(208, 23, 47, 0.78) !important;
+    color: rgba(208, 23, 47, 0.78) !important;
+}
+
+.new-task-input input[type="text"].not-filled:focus::placeholder,
+.new-task-input input[type="text"].not-filled::placeholder,
+.new-task-input input[type="text"].not-filled::-webkit-input-placeholder,
+.new-task-input input[type="text"].not-filled:focus::-webkit-input-placeholder{
+    color: rgba(208, 23, 47, 0.78) !important;
+}
+
+/*
+.new-task-input button {
+    width: 18%;
+    padding: 5px 10px;
+    border: 2px solid #4ad297;
+    border-radius: 2px;
+    color: white;
+    font-size: 17px;
+    background: linear-gradient(#50e3a4, #44ce93);
+    cursor: pointer;
+}
+
+.new-task-input button:hover {
+    border-color: #4abd8b;
+    background: linear-gradient(#50e3a4, #3fbb86);
+}
+
+.new-task-input button:active {
+    outline: none;
+    border-color: rgba(74, 210, 151, 0);
+    background: linear-gradient(#4cd69b, #38a979);
+ }
+
+.new-task-input button:focus {
+    outline: none;
+}
+*/
+/* End Bottom Part */
+
+/* New Button */
+#new {
+    position: absolute;
+    left: 50%;
+    margin-left: -50px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    bottom: -50px;
+    font-size: 54px;
+    color: #46be8b;
+    background-color: #50e3a4;
+    border: none;
+    box-shadow: 0 1px 10px rgb(200, 200, 200);
+    cursor: pointer;
+    transition-property: box-shadow;
+    -webkit-transition-duration: 0.2s;
+    -moz-transition-duration: 0.2s;
+    -o-transition-duration: 0.2s;
+    transition-duration: 0.2s;
+}
+
+#new:hover {
+    box-shadow: 0 1px 10px #7ab79c;
+}
+
+#new:active {
+    background-color: #51dea2;
+}
+
+#new:focus {
+    outline: none;
+}
+
+/* End New Button */
+
+/* Helper Classes */
+.hidden {
+    display: none;
+}
+/* End Helper Classes */
