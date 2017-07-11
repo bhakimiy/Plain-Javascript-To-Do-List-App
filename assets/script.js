@@ -31,7 +31,8 @@ var UIController = (function () {
         addNewButtonID: 'new',
         listItemNameInputID: 'new-task-name',
         finishedTasksListID: 'finished-tasks',
-        unfinishedTasksListID: 'unfinished-tasks'
+        unfinishedTasksListID: 'unfinished-tasks',
+        listItemDragDots: 'drag-dots'
     };
 
 
@@ -41,7 +42,10 @@ var UIController = (function () {
         },
 
         addListItemToUI: function (listItem) {
-            document.querySelector('#' + DOMStrings.unfinishedTasksListID).insertAdjacentHTML('beforeend', '<li>' + listItem.name + '<input type="checkbox" id="task-' + listItem.id + '"><label for="task-' + listItem.id + '"></label></li>');
+            var unfinishedTasksList = document.querySelector('#' + DOMStrings.unfinishedTasksListID);
+            var li = new DOMParser().parseFromString('<li id="task-' + listItem.id +'"><span class="drag-dots">&#8942;&#8942;</span>' + listItem.name + '<input type="checkbox" id="checkbox-' + listItem.id + '" /><label for="checkbox-' + listItem.id + '"></label></li>', 'text/html');
+            li = li.getElementById("task-" + listItem.id);
+            return unfinishedTasksList.insertAdjacentElement('beforeend', li);
         }
     };
 })();
@@ -66,14 +70,14 @@ var AppController = (function (ListController, UIController) {
         };
 
         // Create a function that adds element to the List on the page and to the ListController
-        function addItem  () {
+        function addItem () {
             var itemName = listItemInputElement.value;
             if(itemName){
-                var newIListItem = ListController.addListItem(itemName);
-                UIController.addListItemToUI(newIListItem);
-
+                var newListItem = ListController.addListItem(itemName);
+                var newListItemElement = UIController.addListItemToUI(newListItem);
+                toggleDraggable(newListItemElement);
                 // Adding OnChange listener to the new Element
-                checkboxOnChange.call(document.getElementById('task-' + newIListItem.id));
+                checkboxOnChange.call(document.getElementById('checkbox-' + newListItem.id));
 
                 if(listItemInputElement.classList.contains('not-filled')){
                     listItemInputElement.classList.remove('not-filled');
@@ -82,7 +86,7 @@ var AppController = (function (ListController, UIController) {
             } else {
                 document.getElementById(UIController.getDOMStrings().listItemNameInputID).classList.add('not-filled');
             }
-        };
+        }
         
         // Add OnChange event listener to checkbox input
         var checkboxOnChange = function () {
@@ -96,6 +100,20 @@ var AppController = (function (ListController, UIController) {
                         unfinishedTasksList.appendChild(this.parentNode);
                     }
                 })
+            }
+        };
+
+        // A function that makes the parent node of the
+        var toggleDraggable = function(el){
+            el.firstChild.onmouseover = function(){
+                if(this){
+                    this.parentNode.setAttribute("draggable", "true");
+                }
+            };
+            el.firstChild.onmouseout = function () {
+                if(this){
+                    this.parentNode.setAttribute("draggable", 'false');
+                }
             }
         };
     };
