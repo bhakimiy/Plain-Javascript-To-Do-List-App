@@ -78,6 +78,11 @@ ul {
     font-size: 20px;
     line-height: 30px;
     text-transform: capitalize;
+    -webkit-transition: transform 0.2s ease, opacity 0.2s ease;
+    -moz-transition: transform 0.2s ease, opacity 0.2s ease;
+    -ms-transition: transform 0.2s ease, opacity 0.2s ease;
+    -o-transition: transform 0.2s ease, opacity 0.2s ease;
+    transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .tasks span.drag-dots {
@@ -274,3 +279,36 @@ ul {
     display: none;
 }
 /* End Helper Classes */
+
+/* Dragging related style edits */
+
+.moving {
+    -webkit-transform: scale(0.9);
+    -moz-transform: scale(0.9);
+    -ms-transform: scale(0.9);
+    -o-transform: scale(0.9);
+    transform: scale(0.9);
+    opacity: 0.8;
+}
+
+.over {
+
+}
+
+.tmp-li {
+    width: 100%;
+    border: 1px dashed #a0a0a0;
+}
+
+.depth-1 {
+    margin-left: 15px;
+}
+
+.depth-2 {
+    margin-left: 30px;
+}
+
+.depth-3 {
+    margin-left: 45px;
+}
+/* End Dragging related style edits */
