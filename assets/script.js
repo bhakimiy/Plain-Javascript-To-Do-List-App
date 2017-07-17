@@ -43,7 +43,7 @@ var UIController = (function () {
 
         addListItemToUI: function (listItem) {
             var unfinishedTasksList = document.querySelector('#' + DOMStrings.unfinishedTasksListID);
-            var li = new DOMParser().parseFromString('<li id="task-' + listItem.id +'"><span class="drag-dots">&#8942;&#8942;</span>' + listItem.name + '<input type="checkbox" id="checkbox-' + listItem.id + '" /><label for="checkbox-' + listItem.id + '"></label></li>', 'text/html');
+            var li = new DOMParser().parseFromString('<li id="task-' + listItem.id +'" data-depth="1"><span class="drag-dots">&#8942;&#8942;</span>' + listItem.name + '<input type="checkbox" id="checkbox-' + listItem.id + '" /><label for="checkbox-' + listItem.id + '"></label></li>', 'text/html');
             li = li.getElementById("task-" + listItem.id);
             return unfinishedTasksList.insertAdjacentElement('beforeend', li);
         }
@@ -108,13 +108,16 @@ var AppController = (function (ListController, UIController) {
         };
         
         var DragController = (function () {
-            var cur = null, isTmpCreated = false, tmpLi = null;     // Saving current moving element to edit the classes after drag finishes, and creating helper variables
+            var cur = null, isTmpCreated = false, tmpLi, placeholderPosition, currentMousePosition;     // Saving current moving element to edit the classes after drag finishes, and creating helper variables
+            var dragStartMouseXPosition;                                                 // It used to check if user is trying to make the element child element.
+                                                                                         // If user tries to drag to right side, the dragging element will be moved as a child element
 
             var handleDragStart = function (e) {
-                this.classList.add('moving');
-                e.dataTransfer.effectAllowed = 'move';
-                e.dataTransfer.setData('text/html', this.innerHTML);
-                cur = this;
+                this.classList.add('moving');                           // --
+                e.dataTransfer.effectAllowed = 'move';                  //  Basic drag and drop initialization
+                e.dataTransfer.setData('text/html', this.innerHTML);    // --
+
+                cur = this;                                             // Saving the dragging element to manipulate with it in the future
             };
 
             var handleDragOver = function (e) {
@@ -124,27 +127,37 @@ var AppController = (function (ListController, UIController) {
                 if(cur !== this){
                     var thisRect = this.getBoundingClientRect();    // getBoundingClientRect() gives api where we can get the X, Y position and the height of the element on viewport
                     var mouseYOnObject = thisRect.top + thisRect.height - e.pageY;
-                    var currentMousePositionRelativeToElement, mousePositionAtFirstPlaceholderCreated;
+                    currentMousePosition = ((thisRect.height / 2) < mouseYOnObject) ? 'top' : 'bottom';
 
 
-
+                    if(typeof placeholderPosition === 'undefined'){     // placeholderPosition is declared in a scope of DragController. It used to check the created position placeholder
+                        createPlaceholder();
+                    } else if(placeholderPosition !== currentMousePosition){
+                        tmpLi.remove();
+                        isTmpCreated = false;
+                        createPlaceholder();
+                    }
 
                     function createPlaceholder() {
-                        tmpLi = document.createElement('li');       // Creating plain Li placeholder element
-                        tmpLi.classList.add('tmp-li');              // Adding the prepared css class
-                        tmpLi.style.height = thisRect.height;       // Setting the height of the element equal to other li elements' height.
-                        isTmpCreated = true;
+                        if(!isTmpCreated){       // Check if li placeholder is created. And create li placeholder only if it was not created earlier
 
-                        if(!isTmpCreated){                          // Check if li placeholder is created. And li placeholder create only if it was not created earlier
-                            if((thisRect.height / 2) < mouseYOnObject){     // If user drags the object on top half of the element, the placeholder is created before that element
-                                this.parentNode.insertBefore(tmpLi, this);
-                                mousePositionAtFirstPlaceholderCreated = 'top';
+                            tmpLi = document.createElement('li');       // Creating plain Li placeholder element
+                            tmpLi.classList.add('tmp-li');              // Adding the prepared css class
+                            tmpLi.style.height = thisRect.height;       // Setting the height of the element equal to other li elements' height.
+
+                            if(((thisRect.height / 2) < mouseYOnObject)){     // If user drags the object on top half of the element, the placeholder is created before that element
+                                e.target.parentNode.insertBefore(tmpLi, e.target);
+                                placeholderPosition = 'top';
                             } else {
-                                this.parentNode.insertBefore(tmpLi, this.nextSibling);  // Otherwise, it will be created after the element
-                                mousePositionAtFirstPlaceholderCreated = 'bottom';
+                                e.target.parentNode.insertBefore(tmpLi, e.target.nextSibling);  // Otherwise, it will be created after the element
+                                placeholderPosition = 'bottom';
                             }
+                            isTmpCreated = true;
                         }
                     }
+
+
+
                 }
 
 
@@ -152,8 +165,29 @@ var AppController = (function (ListController, UIController) {
             };
 
             var handleDragEnter = function (e) {
-                if(isTmpCreated){
+                e.preventDefault();
+                dragStartMouseXPosition = e.pageX;                      // Saving the initial horizontal mouse position
+            };
 
+            var handleDrag = function (e) {
+                setDepth();
+
+                /**
+                 * This function check if user is dragging the element to the right or the left side.
+                 * If the element will be pulled into right side it will get the margin left which
+                 * indicates that in case if he will drop the element it will become a child element of the element
+                 * into which the dragging element was dragged on.
+                 * */
+                function setDepth() {
+                    if(typeof tmpLi !== 'undefined' && placeholderPosition === 'bottom'){   // Checks if the placeholder is created and it is bottom placeholder
+                        var depth = parseInt(e.target.dataset.depth) + 1;   // Using HTML 5 data attributes to manipulate with depth
+
+                        if((e.pageX - dragStartMouseXPosition) > 40){
+                            tmpLi.classList.add('depth-' + depth);
+                        } else if (tmpLi.classList.contains('depth-' + depth)) {
+                            tmpLi.classList.remove('depth-' + depth);
+                        }
+                    }
                 }
             };
 
@@ -165,14 +199,17 @@ var AppController = (function (ListController, UIController) {
                 cur.classList.remove('moving');
                 if(tmpLi){
                     tmpLi.remove();     // Removing the li placeholder
-                    tmpLi = null;
+                    tmpLi = undefined;
                     isTmpCreated = false;   // Telling the drag controller that there is no any temporary li placeholder left, and it can be created if needed
+                    placeholderPosition = currentMousePosition = undefined;
                 }
             };
 
             return {
                 attachDragEventListeners: function (item) {
                     item.addEventListener('dragstart', handleDragStart);
+                    item.addEventListener('drag', handleDrag);
+                    item.addEventListener('dragenter', handleDragEnter);
                     item.addEventListener('dragover', handleDragOver);
                     item.addEventListener('dragleave', handleDragLeave);
                     item.addEventListener('dragend', handleDragEnd);

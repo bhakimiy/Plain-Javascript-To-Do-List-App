@@ -300,15 +300,15 @@ ul {
     border: 1px dashed #a0a0a0;
 }
 
-.depth-1 {
-    margin-left: 15px;
-}
-
 .depth-2 {
-    margin-left: 30px;
+    margin-left: 25px !important;
 }
 
 .depth-3 {
-    margin-left: 45px;
+    margin-left: 50px !important;
+}
+
+.depth-4 {
+    margin-left: 75px !important;
 }
 /* End Dragging related style edits */
