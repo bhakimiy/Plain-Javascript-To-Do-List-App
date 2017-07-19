@@ -100,10 +100,35 @@ var AppController = (function (ListController, UIController) {
                 this.addEventListener('change', function () {
                     if(this.checked){
                         finishedTasksList.appendChild(this.parentNode);
+                        if(this.parentNode.dataset.isparent === 'true'){
+                            moveChildElements(this.parentNode, true);       // Check the moveChildElements function
+                        }
                     } else {
                         unfinishedTasksList.appendChild(this.parentNode);
+                        if(this.parentNode.dataset.isparent === 'true'){
+                            moveChildElements(this.parentNode, false);      // Check the moveChildElements function
+                        }
                     }
                 })
+            }
+
+            function moveChildElements(parentElement, isChecked) {      // This function was created to not repeating the code when moving the child elements with its parent
+                var parentId = parseInt(parentElement.id.split('-')[1]);
+                var taskList = ListController.getList();
+                for(var i = 0; taskList.length > i; i++){
+                    if(taskList[i].id === parentId){            // Getting the parent node in the ListController
+                        var children = taskList[i].children;    // and getting its children array
+                        children.forEach(function (t) {         // here starts manipulation with its child elements
+                            var childElement = document.getElementById('checkbox-' + t);    // Finding the child element in the DOM
+                            childElement.checked = isChecked;   // isChecked parameter is sent when the method was called
+                            if(isChecked){
+                                finishedTasksList.appendChild(childElement.parentNode);     // moving the element into finishedTasksList if the isChecked is true
+                            } else {
+                                unfinishedTasksList.appendChild(childElement.parentNode);   // otherwise into unfinishedTasksList
+                            }
+                        });
+                    }
+                }
             }
         };
         
@@ -115,7 +140,7 @@ var AppController = (function (ListController, UIController) {
             var handleDragStart = function (e) {
                 this.classList.add('moving');                           // --
                 e.dataTransfer.effectAllowed = 'move';                  //  Basic drag and drop initialization
-                e.dataTransfer.setData('text/html', this.innerHTML);    // --
+                e.dataTransfer.setData('text/xml', this);    // --
 
                 cur = this;                                             // Saving the dragging element to manipulate with it in the future
             };
@@ -144,8 +169,10 @@ var AppController = (function (ListController, UIController) {
                             tmpLi = document.createElement('li');       // Creating plain Li placeholder element
                             tmpLi.classList.add('tmp-li');              // Adding the prepared css class
                             tmpLi.style.height = thisRect.height;       // Setting the height of the element equal to other li elements' height.
+                            tmpLi.addEventListener('dragover', placeholderDragOverHandler, false);
+                            tmpLi.addEventListener('drop', handleDrop, false); // Making the placeholder able to receive drop elements
 
-                            if(((thisRect.height / 2) < mouseYOnObject)){     // If user drags the object on top half of the element, the placeholder is created before that element
+                            if((thisRect.height / 2) < mouseYOnObject){     // If user drags the object on top half of the element, the placeholder is created before that element
                                 e.target.parentNode.insertBefore(tmpLi, e.target);
                                 placeholderPosition = 'top';
                             } else {
@@ -156,7 +183,10 @@ var AppController = (function (ListController, UIController) {
                         }
                     }
 
-
+                    function placeholderDragOverHandler(e) {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'move';
+                    }
 
                 }
 
@@ -173,8 +203,8 @@ var AppController = (function (ListController, UIController) {
                 setDepth();
 
                 /**
-                 * This function check if user is dragging the element to the right or the left side.
-                 * If the element will be pulled into right side it will get the margin left which
+                 * This function checks if user is dragging the element to the right or the left side.
+                 * If the element will be pulled into the right side it will get the left margin which
                  * indicates that in case if he will drop the element it will become a child element of the element
                  * into which the dragging element was dragged on.
                  * */
@@ -184,8 +214,10 @@ var AppController = (function (ListController, UIController) {
 
                         if((e.pageX - dragStartMouseXPosition) > 40){
                             tmpLi.classList.add('depth-' + depth);
+                            tmpLi.dataset.depth = depth;
                         } else if (tmpLi.classList.contains('depth-' + depth)) {
                             tmpLi.classList.remove('depth-' + depth);
+                            tmpLi.dataset.depth = '';
                         }
                     }
                 }
@@ -195,24 +227,84 @@ var AppController = (function (ListController, UIController) {
 
             };
 
+            var handleDrop = function (e) {
+                if(e.stopPropagation){
+                    e.stopPropagation();        // stops browser from redirecting
+                }
+
+                if(cur !== this){
+                    var dropElement = cur.cloneNode(true);              // Cloning current dragging element to make move effect
+                    dropElement.removeAttribute('class');               // Cleaning all the classes inherited from current dragging element, including 'moving' class
+                    dropElement.removeAttribute('draggable');           // Cleaning draggable attribute to prevent unexpected behaviour
+                    toggleDraggable(dropElement);                       // Making element draggable on hover the dragging dots
+                    attachDragEventListeners(dropElement);              // Setting up all the needed drag and drop listeners to make it draggable
+                    checkboxOnChange.call(dropElement.getElementsByTagName('input')[0]);    // Making the element to change its status from finished to unfinished or vice versa on check/uncheck the checkbox
+
+                    if(this.dataset.depth){
+                        var depth = this.dataset.depth;
+                        dropElement.classList.add('depth-' + depth);
+                        dropElement.dataset.depth = depth;
+
+                        /* <-- Attaching the parent */
+                        var parent = findParent(this);
+                        parent.dataset.isparent = true;
+                        var parentId = parseInt(parent.id.split('-')[1]);
+                        var taskList = ListController.getList();
+                        for(var i = 0; taskList.length > i; i++){
+                            if(taskList[i].id === parentId){
+                                var dropElementId = parseInt(dropElement.id.split('-')[1]);
+                                taskList[i].children.push(dropElementId);
+                                console.log(taskList[i]);
+                            }
+                        }
+                        /* --> End parent attaching */
+                    } else {
+                        cur.dataset.depth = 1;
+                    }
+
+                    cur.remove();
+                    this.parentNode.insertBefore(dropElement, this);
+                }
+
+                /* This function finds the nearest LI element with lover depth level */
+                function findParent(el) {
+                    var previous = el.previousElementSibling;
+                    if(previous.nodeName.toUpperCase() === 'LI'){   // Checking if the previous sibling element is LI
+                        if((parseInt(previous.dataset.depth) + 1) === parseInt(el.dataset.depth)){  // ONLY If the depth of sibling element is higher for 1, than the placeholder's depth, it will be the parent
+                            return previous;                                                        // and will it be returned
+                        } else {
+                            return findParent(previous);                                            // otherwise, the search will continue
+                        }
+                    } else {
+                        return -1;  // If proper element not found, return -1
+                    }
+                }
+
+                return false;
+            };
+
             var handleDragEnd = function (e) {
                 cur.classList.remove('moving');
                 if(tmpLi){
-                    tmpLi.remove();     // Removing the li placeholder
+                    tmpLi.remove();         // Removing the li placeholder
                     tmpLi = undefined;
                     isTmpCreated = false;   // Telling the drag controller that there is no any temporary li placeholder left, and it can be created if needed
                     placeholderPosition = currentMousePosition = undefined;
                 }
             };
 
+            function attachDragEventListeners(item) {
+                item.addEventListener('dragstart', handleDragStart, false);
+                item.addEventListener('drag', handleDrag, false);
+                item.addEventListener('dragenter', handleDragEnter, false);
+                item.addEventListener('dragover', handleDragOver, false);
+                item.addEventListener('dragleave', handleDragLeave, false);
+                item.addEventListener('dragend', handleDragEnd, false);
+            }
+
             return {
                 attachDragEventListeners: function (item) {
-                    item.addEventListener('dragstart', handleDragStart);
-                    item.addEventListener('drag', handleDrag);
-                    item.addEventListener('dragenter', handleDragEnter);
-                    item.addEventListener('dragover', handleDragOver);
-                    item.addEventListener('dragleave', handleDragLeave);
-                    item.addEventListener('dragend', handleDragEnd);
+                    attachDragEventListeners(item);
                 }
             };
         })();

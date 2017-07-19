@@ -89,7 +89,7 @@ ul {
     margin-left: -19px;
     margin-right: 7px;
     opacity: 0;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.3s ease;
     font-size: 19px;
     color: #a0a0a0;
     cursor: move;
