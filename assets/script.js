@@ -254,7 +254,6 @@ var AppController = (function (ListController, UIController) {
                             if(taskList[i].id === parentId){
                                 var dropElementId = parseInt(dropElement.id.split('-')[1]);
                                 taskList[i].children.push(dropElementId);
-                                console.log(taskList[i]);
                             }
                         }
                         /* --> End parent attaching */

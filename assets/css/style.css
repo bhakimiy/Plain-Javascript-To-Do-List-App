@@ -5,12 +5,12 @@
 
 @font-face {
     font-family: 'Gotham-Rounded-Medium';
-    src: url('fonts/GothamRounded-Medium.ttf')  format('truetype'); /* Safari, Android, iOS */
+    src: url('../fonts/GothamRounded-Medium.ttf')  format('truetype'); /* Safari, Android, iOS */
 }
 
 @font-face {
     font-family: 'Gotham-Rounded-Book';
-    src: url('fonts/GothamRounded-Book.ttf')  format('truetype'); /* Safari, Android, iOS */
+    src: url('../fonts/GothamRounded-Book.ttf')  format('truetype'); /* Safari, Android, iOS */
 }
 
 body {
@@ -113,7 +113,7 @@ ul {
     float: right;
     height: 30px;
     width: 30px;
-    background: url("img/check-bg.png") no-repeat;
+    background: url("../img/check-bg.png") no-repeat;
     background-size: cover;
 }
 
@@ -122,7 +122,7 @@ ul {
     float: right;
     height: 30px;
     width: 30px;
-    background: url("img/check-bg-checked.png") no-repeat;
+    background: url("../img/check-bg-checked.png") no-repeat;
     background-size: cover;
 }
 
@@ -131,7 +131,7 @@ ul {
     float: right;
     height: 30px;
     width: 30px;
-    background: url("img/check-bg.png") no-repeat;
+    background: url("../img/check-bg.png") no-repeat;
     background-size: cover;
     cursor: pointer;
 }
@@ -141,17 +141,7 @@ ul {
     float: right;
     height: 30px;
     width: 30px;
-    background: url("img/check-bg-checked.png") no-repeat;
-    background-size: cover;
-    cursor: pointer;
-}
-
-.tasks input[type="checkbox"]:checked + label:hover {
-    display: inline-block;
-    float: right;
-    height: 30px;
-    width: 30px;
-    background: url("img/check-bg-checked.png") no-repeat;
+    background: url("../img/check-bg-checked.png") no-repeat;
     background-size: cover;
     cursor: pointer;
 }
