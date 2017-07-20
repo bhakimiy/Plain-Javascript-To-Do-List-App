@@ -21,6 +21,12 @@ var ListController = (function () {
             var newListItem = new ListItem(itemName);
             List.push(newListItem);
             return newListItem;
+        },
+        
+        removeItem: function (itemId) {
+            for (var i = 0; List.length > i; i++){
+                var cur = List[i];
+            }
         }
     };
 })();
@@ -41,11 +47,15 @@ var UIController = (function () {
             return DOMStrings;
         },
 
-        addListItemToUI: function (listItem) {
-            var unfinishedTasksList = document.querySelector('#' + DOMStrings.unfinishedTasksListID);
-            var li = new DOMParser().parseFromString('<li id="task-' + listItem.id +'" data-depth="1"><span class="drag-dots">&#8942;&#8942;</span>' + listItem.name + '<input type="checkbox" id="checkbox-' + listItem.id + '" /><label for="checkbox-' + listItem.id + '"></label></li>', 'text/html');
+        addListItemToUI: function (listItem) {  // Adding List Item to the DOM
+            var unfinishedTasksList = document.querySelector('#' + DOMStrings.unfinishedTasksListID); // &#8942;&#8942;
+            var li = new DOMParser().parseFromString('<li id="task-' + listItem.id +'" data-depth="1"><span class="drag-dots fa fa-bars"></span><span class="text-content">' + listItem.name + '</span><span class="icons"><i class="fa fa-pencil icon edit" onclick="AppController.edit(event)" aria-hidden="true"></i><i class="fa fa-trash icon trash" onclick="AppController.remove(event)" aria-hidden="true"></i></span><input type="checkbox" id="checkbox-' + listItem.id + '" /><label for="checkbox-' + listItem.id + '"></label></li>', 'text/html');
             li = li.getElementById("task-" + listItem.id);
             return unfinishedTasksList.insertAdjacentElement('beforeend', li);
+        },
+
+        removeListItem: function (itemId) {
+            document.getElementById(itemId).remove();
         }
     };
 })();
@@ -328,6 +338,58 @@ var AppController = (function (ListController, UIController) {
     return {
         init: function () {
             addEventListeners();
+        },
+        
+        edit: function (e) {
+            var editingListElement = e.target.parentNode.parentNode;                        // Getting the list item which should be edited
+            var editingListElementOnViewport = editingListElement.getBoundingClientRect();  // Getting the object which holds all needed information about dimensions of list item on viewport
+            var inputBox = document.createElement('input');                                 // Creating the the input which will be used to edit the text by user
+            var saveButton = document.createElement('button');                              // Creating the save button
+            var cancelButton = document.createElement('button');                            // Creating the cancel button to reset all the changes
+
+            editingListElement.classList.add('editing');                                    // Adding .editing class to list element to prevent hover effect. Check style.css line 89
+            inputBox.setAttribute('type', 'text');                                          // Making input element text input element
+            inputBox.value = editingListElement.textContent;                                // Setting the text which holds the list element into text input
+            inputBox.style.height = editingListElementOnViewport.height;                    // setting the height and -->
+            inputBox.style.width = editingListElementOnViewport.width;                      // --> width of input as the size of the list item on viewport to fully cover the list item
+            inputBox.style.position = 'absolute';                                           // --
+            inputBox.style.left = editingListElementOnViewport.left;                        //  Here input element is being placed on top of list item on viewport
+            inputBox.style.top = editingListElementOnViewport.top;                          // --
+
+            saveButton.textContent = 'Save';
+            saveButton.classList.add('buttons');
+            saveButton.style.position = 'absolute';
+            saveButton.style.top = editingListElementOnViewport.top + editingListElementOnViewport.height;
+            saveButton.style.left = editingListElementOnViewport.left + (editingListElementOnViewport.width / 2) - 70;  // Placing the button just under the input text and aligning it --
+                                                                                                                        // -- in the middle relative to text input. 70 is the width of button
+                                                                                                                        // check style.css line 332
+            cancelButton.textContent = 'Cancel';
+            cancelButton.classList.add('buttons');
+            cancelButton.style.position = 'absolute';
+            cancelButton.style.top = editingListElementOnViewport.top + editingListElementOnViewport.height;
+            cancelButton.style.left = editingListElementOnViewport.left + (editingListElementOnViewport.width / 2);     // Placing the button just under the input text and aligning it --
+                                                                                                                        // -- in the middle relative to text input after save button
+
+            document.body.appendChild(inputBox);        //
+            document.body.appendChild(saveButton);      //  Placing created elements in the document
+            document.body.appendChild(cancelButton);    //
+
+            saveButton.onclick = function (e) {
+                editingListElement.getElementsByClassName('text-content')[0].textContent = inputBox.value;
+                editingListElement.classList.remove('editing');
+                removeCreatedElements();
+            };
+
+            function removeCreatedElements() {
+                saveButton.remove();
+                cancelButton.remove();
+                inputBox.remove();
+            }
+        },
+        
+        remove: function (e) {
+            var listItem = e.target.parentNode.parentNode;
+            UIController.removeListItem(listItem.id);
         }
     };
 })(ListController, UIController);

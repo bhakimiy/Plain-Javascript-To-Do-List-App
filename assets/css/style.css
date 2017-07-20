@@ -83,20 +83,27 @@ ul {
     -ms-transition: transform 0.2s ease, opacity 0.2s ease;
     -o-transition: transform 0.2s ease, opacity 0.2s ease;
     transition: transform 0.2s ease, opacity 0.2s ease;
+    overflow-wrap: break-word;
 }
 
-.tasks span.drag-dots {
-    margin-left: -19px;
-    margin-right: 7px;
+.tasks li:not(.editing) span.drag-dots {
+    margin-left: -23px;
+    margin-right: 0;
     opacity: 0;
     transition: opacity 0.3s ease;
     font-size: 19px;
     color: #a0a0a0;
     cursor: move;
+    display: initial;
 }
 
-.tasks li:hover span.drag-dots {
+.tasks li:not(.editing):hover span.drag-dots {
     opacity: 1;
+}
+
+.tasks li:hover span.icons {
+    transition: 0.3s ease;
+    display: inline-block;
 }
 
 .tasks input {
@@ -302,3 +309,38 @@ ul {
     margin-left: 75px !important;
 }
 /* End Dragging related style edits */
+
+.icon {
+    font-size: 13px !important;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+.edit {
+    color: #0072ff;
+}
+
+.edit:hover {
+    cursor: pointer;
+}
+
+.trash {
+    color: #e41616;
+}
+
+.trash:hover {
+    cursor: pointer;
+}
+
+.icons {
+    transition: 5s ease;
+    display: none;
+}
+
+.buttons {
+    width: 70px;
+}
+
+.text-content {
+    margin-left: 7px;
+}
