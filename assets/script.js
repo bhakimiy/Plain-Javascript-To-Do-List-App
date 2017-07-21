@@ -106,6 +106,7 @@ var AppController = (function (ListController, UIController) {
             if(itemName){
                 if(isStarterOnPage) {                           //
                     UIController.removeStarterContent();        //  Removing Starter Content if it on the page
+                    isStarterOnPage = false;
                 }                                               //
 
                 var newListItem = ListController.addListItem(itemName);
