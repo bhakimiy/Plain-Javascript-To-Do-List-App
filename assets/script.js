@@ -25,7 +25,10 @@ var ListController = (function () {
         
         removeItem: function (itemId) {
             for (var i = 0; List.length > i; i++){
-                var cur = List[i];
+                if(List[i].id == itemId){
+                    List.splice(i, 1);
+                    break;
+                }
             }
         }
     };
@@ -56,14 +59,32 @@ var UIController = (function () {
 
         removeListItem: function (itemId) {
             document.getElementById(itemId).remove();
+        },
+
+        removeStarterContent: function () {
+            document.getElementById('starter-content').remove();
+        },
+        
+        setDate: function (weekday, day, month, year) {
+            document.querySelector('.week-day').textContent = weekday;
+            document.querySelector('.day').textContent = day;
+            document.querySelector('.month').textContent = month;
+            document.querySelector('.year').textContent = year;
         }
     };
 })();
 
 // App Controller Object
 var AppController = (function (ListController, UIController) {
-    var addEventListeners = function () {
+    var isStarterOnPage = true;
+    var setDate = function () {
+        var date = new Date();
+        var weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        UIController.setDate(weekdays[date.getDay()], date.getDate(), months[date.getMonth()], date.getFullYear());
+    };
 
+    var addEventListeners = function () {
         var addNewButton = document.getElementById(UIController.getDOMStrings().addNewButtonID);
         var listItemInputElement = document.getElementById(UIController.getDOMStrings().listItemNameInputID);
 
@@ -83,6 +104,10 @@ var AppController = (function (ListController, UIController) {
         function addItem () {
             var itemName = listItemInputElement.value;
             if(itemName){
+                if(isStarterOnPage) {                           //
+                    UIController.removeStarterContent();        //  Removing Starter Content if it on the page
+                }                                               //
+
                 var newListItem = ListController.addListItem(itemName);
                 var newListItemElement = UIController.addListItemToUI(newListItem);
 
@@ -331,12 +356,11 @@ var AppController = (function (ListController, UIController) {
                 }
             }
         };
-
-
     };
 
     return {
         init: function () {
+            setDate();
             addEventListeners();
         },
         
@@ -375,7 +399,16 @@ var AppController = (function (ListController, UIController) {
             document.body.appendChild(cancelButton);    //
 
             saveButton.onclick = function (e) {
-                editingListElement.getElementsByClassName('text-content')[0].textContent = inputBox.value;
+                if(inputBox.value){     // Checking if user entered the value. If input is empty, prevent saving
+                    editingListElement.getElementsByClassName('text-content')[0].textContent = inputBox.value;  // Saving the new value
+                    editingListElement.classList.remove('editing');     // Removing .editing class to return the dragging functionality to the list item
+                    removeCreatedElements();
+                } else {
+                    inputBox.classList.add('not-filled');
+                }
+            };
+
+            cancelButton.onclick = function (e) {
                 editingListElement.classList.remove('editing');
                 removeCreatedElements();
             };
@@ -389,7 +422,22 @@ var AppController = (function (ListController, UIController) {
         
         remove: function (e) {
             var listItem = e.target.parentNode.parentNode;
+            var listItemID = listItem.id.split('-')[1];
+            if(listItem.dataset.isparent){
+                var list = ListController.getList();
+                for(var i = 0; list.length > i; i++){
+                    if(list[i].id == listItemID){
+                        list[i].children.forEach(function (t) {
+                            UIController.removeListItem('task-' + t);
+                            ListController.removeItem(t);
+                        });
+                        break;
+                    }
+                }
+            }
+
             UIController.removeListItem(listItem.id);
+            ListController.removeItem(listItemID);
         }
     };
 })(ListController, UIController);
