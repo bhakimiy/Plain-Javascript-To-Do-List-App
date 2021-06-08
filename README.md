@@ -6,6 +6,6 @@ You can leave your suggestions on "Issues" section to add new features or improv
 Whenever I will have free time, and find the suggestions useful, I will implement them.
 <br><br>
 
-You can check out the live app here: https://marshmell0w.github.io/Plain-Javascript-To-Do-List-App/
+You can check out the live app here: https://bhakimiy.github.io/Plain-Javascript-To-Do-List-App/
 
 **P.S.** The [TO-DO List](https://dribbble.com/shots/2451888-ToDo-List) design concept of [Goutham](http://goutham-aj.dribbble.com/) was used as a base HTML&CSS template for this app.
